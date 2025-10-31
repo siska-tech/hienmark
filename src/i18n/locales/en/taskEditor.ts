@@ -1,0 +1,16 @@
+export const taskEditor = {
+  title: 'Task Editor',
+  preview: 'Preview',
+  edit: 'Edit',
+  saving: 'Saving...',
+  saved: 'Saved',
+  autoSave: 'Auto-save',
+  unsavedChanges: 'You have unsaved changes',
+  tags: 'Tags',
+  addTag: 'Add Tag',
+  selectCategory: 'Select category',
+  selectValue: 'Select value',
+  enterValue: 'Enter value',
+  invalidValue: 'Invalid value',
+  dropHere: 'Drop here',
+};

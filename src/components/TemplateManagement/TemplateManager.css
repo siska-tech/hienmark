@@ -1,0 +1,296 @@
+.template-manager {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--app-bg-main);
+  border-radius: 8px;
+}
+
+.template-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.template-manager-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.template-manager-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--app-text-secondary);
+}
+
+.error {
+  padding: 1rem;
+  background: #fee;
+  color: #c33;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--app-text-secondary);
+}
+
+.empty-state p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.template-item {
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.template-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.template-item.selected {
+  border-color: var(--app-accent);
+}
+
+.template-item.default {
+  border-color: #28a745;
+  border-width: 2px;
+}
+
+.template-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  background: var(--app-bg-secondary);
+  transition: background 0.2s;
+}
+
+.template-header:hover {
+  background: var(--app-bg-tertiary);
+}
+
+.template-info {
+  flex: 1;
+}
+
+.template-name {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.default-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  background: #28a745;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+.template-description {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--app-text-secondary);
+}
+
+.template-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--app-text-tertiary);
+}
+
+.toggle-btn {
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--app-text-secondary);
+}
+
+.template-details {
+  padding: 1rem;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-bg-main);
+}
+
+.tags-preview h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.tags-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.tags-table th {
+  text-align: left;
+  padding: 0.5rem;
+  background: var(--app-bg-tertiary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.tags-table td {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-text-main);
+}
+
+.tags-table tbody tr:nth-child(odd) {
+  background-color: var(--app-bg-secondary);
+}
+
+.tag-key {
+  font-family: 'Courier New', monospace;
+  color: var(--app-accent);
+  font-weight: 500;
+}
+
+.tag-value {
+  font-family: 'Courier New', monospace;
+  color: var(--app-text-main);
+}
+
+.tag-value:empty::before {
+  /* 中身が空(empty)の時、
+     見えないスペース(&nbsp;と同じ)を挿入して高さを確保する */
+  content: '\00a0'; 
+}
+
+.template-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ボタンスタイル */
+.btn-create {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  background: var(--app-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-create svg {
+  pointer-events: none;
+}
+
+.btn-create:hover {
+  opacity: 0.8;
+}
+
+.btn-primary {
+  background: var(--app-accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  opacity: 0.8;
+}
+
+.btn-secondary {
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+  border: 1px solid var(--app-border);
+}
+
+.btn-secondary:hover {
+  background: var(--app-bg-secondary);
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+.btn-close {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: var(--app-text-secondary);
+  border: 1px solid var(--app-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close svg {
+  pointer-events: none;
+}
+.btn-close:hover {
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+}

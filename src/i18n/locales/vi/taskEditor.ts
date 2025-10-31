@@ -1,0 +1,16 @@
+export const taskEditor = {
+  title: 'Chỉnh sửa công việc',
+  preview: 'Xem trước',
+  edit: 'Chỉnh sửa',
+  saving: 'Đang lưu...',
+  saved: 'Đã lưu',
+  autoSave: 'Tự động lưu',
+  unsavedChanges: 'Bạn có thay đổi chưa được lưu',
+  tags: 'Thẻ',
+  addTag: 'Thêm thẻ',
+  selectCategory: 'Chọn danh mục',
+  selectValue: 'Chọn giá trị',
+  enterValue: 'Nhập giá trị',
+  invalidValue: 'Giá trị không hợp lệ',
+  dropHere: 'Thả vào đây',
+};

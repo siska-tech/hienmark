@@ -1,0 +1,25 @@
+{
+  "strictTagMode": false,
+  "allowedCategories": [
+    "status",
+    "priority",
+    "tags"
+  ],
+  "watchEnabled": true,
+  "templates": {
+    "templates": {}
+  },
+  "tag_configs": {
+    "configs": {}
+  },
+  "autoSaveEnabled": true,
+  "autoSaveInterval": 3000,
+  "theme": "HienMark Dark",
+  "editorFontFamily": null,
+  "editorFontSize": null,
+  "wordWrap": false,
+  "scrollSync": true,
+  "defaultTaskTemplate": null,
+  "defaultSortOrder": null,
+  "gitIntegration": false
+}

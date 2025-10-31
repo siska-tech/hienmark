@@ -1,0 +1,18 @@
+export const app = {
+  title: 'HienMark',
+  subtitle: 'ローカルファーストタスク管理エディター',
+  welcome: 'HienMarkへようこそ',
+  welcomeMessage: 'ワークスペースを開いて始めましょう',
+  openWorkspace: 'ワークスペースを開く',
+  loading: 'ワークスペースを読み込み中...',
+  noTaskSelected: 'サイドバーからタスクを選択して表示・編集',
+  tagManagement: 'タグ管理',
+  tagSettings: '設定',
+  showTasks: 'タスク表示',
+  initializing: 'アプリケーションを起動しています...',
+  loadingLanguage: '言語設定を読み込み中...',
+  initializingComponents: 'コンポーネントを初期化中...',
+  preparingWorkspace: 'ワークスペースを準備中...',
+  finalizing: '最終調整中...',
+  ready: '準備完了',
+};

@@ -1,0 +1,18 @@
+export const app = {
+  title: 'HienMark',
+  subtitle: 'Trình soạn thảo quản lý công việc ưu tiên nội bộ',
+  welcome: 'Chào mừng đến với HienMark',
+  welcomeMessage: 'Mở không gian làm việc để bắt đầu',
+  openWorkspace: 'Mở không gian làm việc',
+  loading: 'Đang tải không gian làm việc...',
+  noTaskSelected: 'Chọn một công việc từ thanh bên để xem và chỉnh sửa',
+  tagManagement: 'Quản lý thẻ',
+  tagSettings: 'Cài đặt',
+  showTasks: 'Hiển thị công việc',
+  initializing: 'Đang khởi tạo ứng dụng...',
+  loadingLanguage: 'Đang tải cài đặt ngôn ngữ...',
+  initializingComponents: 'Đang khởi tạo thành phần...',
+  preparingWorkspace: 'Đang chuẩn bị không gian làm việc...',
+  finalizing: 'Đang hoàn tất...',
+  ready: 'Sẵn sàng',
+};

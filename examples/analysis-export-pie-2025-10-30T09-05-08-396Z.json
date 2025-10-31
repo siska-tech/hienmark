@@ -1,0 +1,29 @@
+{
+  "mermaid": "pie\n    title sprint Distribution\n    \"Sprint-6\" : 1\n    \"Sprint-2\" : 1\n    \"Sprint-5\" : 1\n    \"Sprint-8\" : 1\n    \"Sprint-7\" : 1",
+  "data": {
+    "type": "pie",
+    "title": "sprint Distribution",
+    "categories": [
+      {
+        "label": "Sprint-6",
+        "count": 1
+      },
+      {
+        "label": "Sprint-2",
+        "count": 1
+      },
+      {
+        "label": "Sprint-5",
+        "count": 1
+      },
+      {
+        "label": "Sprint-8",
+        "count": 1
+      },
+      {
+        "label": "Sprint-7",
+        "count": 1
+      }
+    ]
+  }
+}

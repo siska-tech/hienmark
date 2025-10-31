@@ -1,0 +1,25 @@
+{
+  "mermaid": "pie\n    title category Distribution\n    \"Maintenance\" : 5\n    \"Feature\" : 2\n    \"Enhancement\" : 8\n    \"Bug\" : 3",
+  "data": {
+    "type": "pie",
+    "title": "category Distribution",
+    "categories": [
+      {
+        "label": "Maintenance",
+        "count": 5
+      },
+      {
+        "label": "Feature",
+        "count": 2
+      },
+      {
+        "label": "Enhancement",
+        "count": 8
+      },
+      {
+        "label": "Bug",
+        "count": 3
+      }
+    ]
+  }
+}

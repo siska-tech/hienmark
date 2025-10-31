@@ -1,0 +1,250 @@
+/* TagConfigEditor 右ペインパネルのスタイル */
+
+.tag-config-panel {
+  width: 400px;
+  height: 100%;
+  background: var(--app-bg-main);
+  border-left: 1px solid var(--app-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.tag-config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-bg-secondary);
+  flex-shrink: 0;
+}
+
+.tag-config-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+}
+
+.btn-close {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: var(--app-text-secondary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover:not(:disabled) {
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+}
+
+.btn-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tag-config-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--app-text-main);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--app-bg-tertiary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+  color: var(--app-text-main);
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--app-accent);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--app-text-tertiary);
+}
+
+.checkbox-label,
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--app-text-main);
+}
+
+.checkbox-label input[type="checkbox"],
+.radio-label input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--app-accent);
+}
+
+.allowed-value-type-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.list-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.list-value-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.list-value-item input {
+  flex: 1;
+}
+
+.btn-danger-small {
+  padding: 0.25rem 0.5rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-danger-small:hover {
+  background: #c82333;
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--app-bg-secondary);
+}
+
+.range-inputs {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.range-input-group {
+  flex: 1;
+}
+
+.range-input-group label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--app-text-secondary);
+}
+
+.range-input-group input {
+  width: 100%;
+  padding: 0.5rem;
+  background: var(--app-bg-tertiary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+  color: var(--app-text-main);
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-bg-secondary);
+  flex-shrink: 0;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: var(--app-accent);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* スクロールバーのスタイル */
+.tag-config-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tag-config-content::-webkit-scrollbar-track {
+  background: var(--app-bg-secondary);
+}
+
+.tag-config-content::-webkit-scrollbar-thumb {
+  background: var(--app-border);
+  border-radius: 3px;
+}
+
+.tag-config-content::-webkit-scrollbar-thumb:hover {
+  background: var(--app-text-secondary);
+}

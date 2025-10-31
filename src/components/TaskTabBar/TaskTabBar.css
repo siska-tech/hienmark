@@ -1,0 +1,29 @@
+.task-tab-bar {
+  display: flex;
+  align-items: flex-end;
+  background-color: var(--app-bg-secondary);
+  border-bottom: 1px solid var(--app-border);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-border) var(--app-bg-secondary);
+  flex-shrink: 0; /* タブバーの高さを固定 */
+}
+
+.task-tab-bar::-webkit-scrollbar {
+  height: 8px;
+}
+
+.task-tab-bar::-webkit-scrollbar-track {
+  background: var(--app-bg-secondary);
+}
+
+.task-tab-bar::-webkit-scrollbar-thumb {
+  background: var(--app-border);
+  border-radius: 4px;
+}
+
+.task-tab-bar::-webkit-scrollbar-thumb:hover {
+  background: var(--app-border-hover);
+}
+

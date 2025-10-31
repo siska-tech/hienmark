@@ -1,0 +1,613 @@
+/* TagEditorPanel コンポーネントのスタイル */
+
+.tag-editor-panel {
+  width: 100%;
+  background: var(--app-sidebar-bg);
+  border-right: 1px solid var(--app-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tag-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-bg-secondary);
+}
+
+.tag-panel-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tag-editor-panel .tag-panel-header h3 {
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: var(--app-text-main) !important;
+}
+
+.btn-toggle-frontmatter {
+  padding: 0.25rem 0.5rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-toggle-frontmatter:hover {
+  background: #5a6268;
+}
+
+.btn-add-tag {
+  padding: 0.25rem 0.5rem;
+  background: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add-tag:hover {
+  background: #1177bb;
+}
+
+.tag-panel-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tag-field {
+  margin-bottom: 1px; /* 通常時は間隔をさらに詰める */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+  cursor: grab;
+  width: 100%;
+  box-sizing: border-box;
+  /* 子要素の幅を制限しない */
+  min-width: 0;
+}
+
+/* 入力要素の幅を強制的に100%に設定 */
+.tag-field .tag-select,
+.tag-field .tag-input,
+.tag-field .tag-date,
+.tag-field .tag-value,
+.tag-field .select-input,
+.tag-field .dynamic-input select,
+.tag-field input[type="text"],
+.tag-field input[type="number"],
+.tag-field input[type="date"],
+.tag-field input[type="datetime-local"] {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 100% !important;
+}
+
+.tag-field:active {
+  cursor: grabbing;
+}
+
+.tag-field:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tag-field.dragging {
+  opacity: 0.4;
+}
+
+.tag-drag-handle {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  color: #858585;
+  font-size: 0.75rem;
+  cursor: grab;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: auto;
+}
+
+.tag-field:hover .tag-drag-handle {
+  opacity: 1;
+}
+
+.tag-drag-handle:active {
+  cursor: grabbing;
+}
+
+.tag-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--app-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 1.5rem;
+}
+
+.tag-select,
+.tag-input,
+.tag-date,
+.select-input,
+.dynamic-input select,
+.dynamic-input input[type="text"],
+.dynamic-input input[type="number"],
+.dynamic-input input[type="date"],
+.dynamic-input input[type="datetime-local"],
+.dynamic-input.date-input,
+.dynamic-input .date-input,
+.date-input {
+  padding: 0.5rem;
+  background: var(--app-bg-tertiary) !important;
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+  color: var(--app-text-main) !important;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  cursor: auto;
+  pointer-events: auto;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* セレクトボックスの矢印アイコン */
+.tag-select,
+select.select-input,
+select.dynamic-input,
+.dynamic-input select,
+select[class*="select-input"],
+select[class*="dynamic-input"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cccccc' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.5rem center !important;
+  background-size: 12px !important;
+  padding-right: 2rem !important;
+}
+
+/* date inputは矢印アイコンを追加しない */
+input.dynamic-input.date-input,
+input.date-input.dynamic-input,
+input[type="date"].dynamic-input,
+input[type="datetime-local"].dynamic-input,
+.dynamic-input input[type="date"],
+.dynamic-input input[type="datetime-local"],
+.tag-date {
+  background-image: none !important;
+  padding-right: 0.5rem !important;
+  background: var(--app-bg-tertiary) !important;
+  border: 1px solid var(--app-border) !important;
+  border-radius: 0.25rem !important;
+  color: var(--app-text-main) !important;
+  font-size: 0.875rem !important;
+  font-family: inherit !important;
+  padding: 0.5rem !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* セレクトボックス以外のinput要素には矢印を追加しない */
+input.dynamic-input,
+input[type="text"].dynamic-input,
+input[type="number"].dynamic-input {
+  background-image: none !important;
+  padding-right: 0.5rem !important;
+}
+
+.tag-select:focus,
+.tag-input:focus,
+.tag-date:focus,
+.select-input:focus,
+.dynamic-input select:focus,
+.dynamic-input input[type="text"]:focus,
+.dynamic-input input[type="number"]:focus,
+.dynamic-input input[type="date"]:focus,
+.dynamic-input input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: var(--app-accent);
+  background-color: var(--app-bg-tertiary) !important;
+}
+
+/* セレクトボックスのoption要素のスタイル */
+.tag-select option,
+.select-input option,
+.dynamic-input select option {
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+  font-family: inherit;
+}
+
+/* date inputのカレンダーアイコンとカラーテーマ対応 */
+.dynamic-input input[type="date"],
+.dynamic-input input[type="datetime-local"],
+.tag-date {
+  /* カレンダーアイコンの色を統一 */
+  color-scheme: dark;
+}
+
+:root[data-theme="hienmark-white"] .dynamic-input input[type="date"],
+:root[data-theme="hienmark-white"] .dynamic-input input[type="datetime-local"],
+:root[data-theme="hienmark-white"] .tag-date {
+  color-scheme: light;
+}
+
+.tag-select,
+.select-input,
+.dynamic-input select {
+  cursor: pointer;
+}
+
+.tag-multiselect {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tag-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--app-text-main);
+  padding: 0.25rem 0;
+}
+
+.tag-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--app-accent);
+}
+
+.tag-checkbox:hover {
+  color: var(--app-text-main);
+}
+
+.tag-value {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--app-bg-tertiary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--app-text-main);
+  min-height: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex: 1;
+  min-width: 0;
+}
+
+.tag-single {
+  color: var(--app-text-main);
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.tag-single:empty::before {
+  /* 中身が空(empty)の時、
+     見えないスペース(&nbsp;と同じ)を挿入して高さを確保する */
+  content: '\00a0'; 
+}
+
+.tag-array {
+  color: var(--app-accent);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.custom-tag {
+  border-left: 3px solid var(--app-accent);
+  padding-left: 0.75rem;
+}
+
+.tag-remove {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 20px;
+  height: 20px;
+  background: #c72e0f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tag-field:hover .tag-remove {
+  opacity: 1;
+}
+
+.tag-remove:hover {
+  background: #d73e1f;
+}
+
+.tag-add-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #2d2d30;
+  border-radius: 0.5rem;
+  border: 1px solid #3c3c3c;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tag-add-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.btn-add {
+  padding: 0.5rem 1rem;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.btn-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tag-description {
+  font-size: 0.75rem;
+  color: #858585;
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+.tag-boolean {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background: #3c3c3c;
+  border: 1px solid #5a5a5a;
+  border-radius: 0.25rem;
+}
+
+/* スクロールバーのスタイル */
+.tag-panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tag-panel-content::-webkit-scrollbar-track {
+  background: var(--app-bg-secondary);
+}
+
+.tag-panel-content::-webkit-scrollbar-thumb {
+  background: var(--app-border);
+  border-radius: 3px;
+}
+
+.tag-panel-content::-webkit-scrollbar-thumb:hover {
+  background: var(--app-border-hover);
+}
+
+/* ドロップゾーンのスタイル */
+.drop-zone {
+  min-height: 16px;
+  height: 16px;
+  margin: 4px 0;
+  border-radius: 4px;
+  transition: background 0.2s, border 0.2s;
+  background: transparent;
+  border: 1px dashed transparent;
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.drop-zone.active {
+  background: rgba(14, 99, 156, 0.2);
+  border: 2px dashed #0e639c;
+  pointer-events: auto;
+}
+
+.drop-zone.active:hover {
+  background: rgba(14, 99, 156, 0.3);
+}
+
+/* 独自ドラッグ実装用のスタイル */
+.tag-field.dragging {
+  opacity: 0.6;
+  cursor: grabbing !important;
+  transform: scale(0.95) rotate(2deg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.tag-field.drop-zone-hover {
+  border-top: 3px solid #0e639c !important;
+  background: rgba(14, 99, 156, 0.1) !important;
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+.drop-zone.hover {
+  background: rgba(14, 99, 156, 0.3) !important;
+  border: 2px solid #0e639c !important;
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.drop-zone.hover .drop-indicator {
+  color: #0e639c;
+  font-weight: 600;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* ドラッグ中のグローバルスタイル */
+body.dragging {
+  user-select: none !important;
+  cursor: grabbing !important;
+}
+
+/* ドラッグハンドルの改善 */
+.tag-drag-handle {
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.tag-field:hover .tag-drag-handle {
+  color: #0e639c;
+  transform: scale(1.1);
+}
+
+.tag-field.dragging .tag-drag-handle {
+  cursor: grabbing;
+  color: #0e639c;
+}
+
+/* ドラッグ時のドロップゾーン拡大 */
+body.dragging .drop-zone {
+  margin: 4px 0; /* ドラッグ時は間隔を少し広げる */
+  min-height: 16px; /* ドロップゾーンを少し小さく */
+  background: rgba(14, 99, 156, 0.05);
+  border: 1px dashed transparent;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dragging .drop-zone.active {
+  background: rgba(14, 99, 156, 0.1);
+  border: 1px dashed #0e639c;
+}
+
+/* ドラッグ時のタグフィールドの間隔調整 */
+body.dragging .tag-field:not(.dragging) {
+  margin-bottom: 2px; /* ドラッグ時は少し間隔を広げる */
+}
+
+/* カスタムタグ編集モード */
+.tag-field.editing {
+  background: rgba(14, 99, 156, 0.1);
+  border: 1px solid #0e639c;
+  padding: 0.5rem;
+}
+
+.tag-edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.tag-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+  padding: 0 !important;
+  margin: 0;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box !important;
+  font-size: 16px;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.btn-save {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #45a049;
+}
+
+.btn-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: #5a6268;
+}
+
+/* 編集モード時はドラッグハンドルと削除ボタンを非表示 */
+.tag-field.editing .tag-drag-handle,
+.tag-field.editing .tag-remove {
+  display: none;
+}
+
+/* タグ値のホバー効果 */
+.tag-value:hover {
+  background: rgba(14, 99, 156, 0.1);
+  border-color: #0e639c;
+  transition: all 0.2s;
+}

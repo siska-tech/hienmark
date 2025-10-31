@@ -1,0 +1,52 @@
+.popover-panel {
+  background: var(--app-bg-secondary);
+  color: var(--app-text-main);
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.popover-content {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.popover-section-title {
+  font-size: 0.8rem;
+  color: var(--app-text-sub);
+  margin-bottom: 0.25rem;
+}
+
+.popover-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.popover-control,
+.popover-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--app-border);
+  border-radius: 4px;
+  background: var(--app-bg-secondary);
+  color: var(--app-text-main);
+}
+
+.popover-control:focus,
+.popover-select:focus {
+  outline: none;
+  border-color: var(--app-accent);
+}
+
+.popover-checkbox {
+  accent-color: var(--app-accent);
+  cursor: pointer;
+}
+
+.popover-label-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+

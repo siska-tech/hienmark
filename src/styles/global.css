@@ -1,0 +1,228 @@
+/* Inter Font Face */
+@font-face {
+  font-family: 'Inter';
+  src: url('/inter-normal-100%20900.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/inter-italic-100%20900.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Global Theme Variables */
+:root[data-theme="hienmark-dark"] {
+  --app-bg-main: #1a1a1a;
+  --app-bg-secondary: #2d2d30;
+  --app-bg-tertiary: #1e1e1e;
+  --app-text-main: #ffffff;
+  --app-text-secondary: #cccccc;
+  --app-text-tertiary: #999999;
+  --app-border: #3c3c3c;
+  --app-border-hover: #505050;
+  --app-accent: #646cff;
+  --app-header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --app-workspace-bg: #1a1a1a;
+  --app-sidebar-bg: #252526;
+  --app-content-bg: #1a1a1a;
+  --app-icon-secondary: #999999;
+  --app-icon-hover: #ffffff;
+  --app-cursor-color: #646cff;
+  /* Code styling */
+  --code-inline-bg: #2a2a2a;
+  --code-inline-fg: #ffffff;
+  --code-inline-border: #3c3c3c;
+}
+
+:root[data-theme="hienmark-white"] {
+  --app-bg-main: #ffffff;
+  --app-bg-secondary: #f5f5f5;
+  --app-bg-tertiary: #fafafa;
+  --app-text-main: #333333;
+  --app-text-secondary: #666666;
+  --app-text-tertiary: #999999;
+  --app-border: #e0e0e0;
+  --app-border-hover: #d0d0d0;
+  --app-accent: #3b82f6;
+  --app-header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --app-workspace-bg: #f5f5f5;
+  --app-sidebar-bg: #ffffff;
+  --app-content-bg: #ffffff;
+  --app-icon-secondary: #6b7280;
+  --app-icon-hover: #374151;
+  /* Code styling */
+  --code-inline-bg: #f3f4f6;
+  --code-inline-fg: #111827;
+  --code-inline-border: #e5e7eb;
+}
+
+/* Legacy variables for backward compatibility */
+:root {
+  --color-bg: var(--app-bg-main);
+  --color-fg: var(--app-text-main);
+  --color-primary: var(--app-accent);
+  --color-border: var(--app-border);
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  line-height: 1.6;
+}
+
+/* Use Inter font for Vietnamese */
+html[data-language="vi"] body,
+html[data-language="vi"] * {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.app-header p {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+.welcome {
+  text-align: center;
+  max-width: 600px;
+  padding: 2rem;
+}
+
+.welcome h2 {
+  margin-bottom: 1rem;
+}
+
+.welcome p {
+  margin-bottom: 2rem;
+  color: #888;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.8;
+}
+
+.workspace {
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+}
+
+/* Scrollbar Styles - HienMark Theme */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(102, 126, 234, 0.4) transparent;
+}
+
+/* Webkit scrollbar (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.7);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: rgba(102, 126, 234, 0.9);
+  background-clip: content-box;
+}
+
+/* Dark theme scrollbar - Subtle purple tint */
+[data-theme="hienmark-dark"] *::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.6);
+  background-clip: content-box;
+}
+
+[data-theme="hienmark-dark"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.8);
+  background-clip: content-box;
+}
+
+[data-theme="hienmark-dark"] *::-webkit-scrollbar-thumb:active {
+  background: rgba(102, 126, 234, 1);
+  background-clip: content-box;
+}
+
+/* Light theme scrollbar - Subtle purple tint */
+[data-theme="hienmark-white"] *::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.4);
+  background-clip: content-box;
+}
+
+[data-theme="hienmark-white"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.6);
+  background-clip: content-box;
+}
+
+[data-theme="hienmark-white"] *::-webkit-scrollbar-thumb:active {
+  background: rgba(102, 126, 234, 0.8);
+  background-clip: content-box;
+}

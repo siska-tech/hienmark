@@ -1,0 +1,613 @@
+.task-browser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--app-sidebar-bg);
+  border-right: 1px solid var(--app-border);
+}
+
+.task-browser-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-sidebar-bg);
+}
+
+.task-browser-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-mode-group {
+  display: flex;
+  align-items: center;
+  background: var(--app-bg-tertiary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.view-mode-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--app-text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-mode-btn + .view-mode-btn {
+  border-left: 1px solid var(--app-border);
+}
+
+.view-mode-btn:hover {
+  background: var(--app-bg-secondary);
+  color: var(--app-text-main);
+}
+
+.view-mode-btn.active {
+  background: var(--app-accent);
+  color: white;
+}
+
+.btn-filter {
+  padding: 0;
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-secondary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-filter svg {
+  pointer-events: none;
+}
+
+.btn-filter:hover {
+  background: var(--app-bg-secondary);
+  border-color: var(--app-border-hover);
+  color: var(--app-text-main);
+}
+
+.btn-filter.active {
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: white;
+}
+
+.btn-create {
+  padding: 0;
+  background: linear-gradient(135deg, #10b981, #059669) !important; /* エメラルド～緑のグラデーション */
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-create svg {
+  pointer-events: none;
+}
+
+.btn-create:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  transform: scale(1.05);
+}
+
+.task-browser-search {
+  padding: 1rem;
+  background: var(--app-sidebar-bg);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.search-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.search-container .search-input {
+  flex: 1;
+}
+
+.btn-filter-inline {
+  padding: 0.5rem;
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-secondary);
+  border: 1px solid var(--app-border);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-filter-inline:hover {
+  background: var(--app-bg-secondary);
+  border-color: var(--app-border-hover);
+  color: var(--app-text-main);
+}
+
+.btn-filter-inline.active {
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: white;
+}
+
+.btn-filter-inline svg {
+  pointer-events: none;
+}
+
+.task-item.compact {
+  padding: 0.75rem;
+}
+
+.task-item.compact .task-item-title {
+  font-size: 0.9rem;
+}
+
+.task-item.compact .task-item-tags,
+.task-item.compact .task-item-preview {
+  display: none;
+}
+
+/* Remove hover-expansion in compact mode to keep fixed item height for virtualization */
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--app-border);
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.task-browser-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+/* spacing between virtual rows (since task-item has no margins) */
+.virtual-row {
+  padding-bottom: 0.75rem;
+}
+
+.task-browser-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--app-text-secondary);
+}
+
+.task-browser-empty p {
+  margin: 0.25rem 0;
+}
+
+.task-browser-empty .hint {
+  font-size: 0.875rem;
+}
+
+.task-item {
+  background: var(--app-bg-tertiary);
+  border: 1px solid var(--app-border);
+  border-left: 4px solid transparent;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  /* margin removed to keep fixed row height in virtualization */
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* fill row height provided by react-window wrapper */
+  height: auto;
+  /* allow inner flex children to shrink for ellipsis */
+  min-width: 0;
+  overflow: hidden; /* prevent child overflow */
+}
+
+.task-item:hover {
+  border-color: var(--app-accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.task-item.selected {
+  border-left: 4px solid var(--app-accent);
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--app-accent);
+}
+
+.task-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+  min-width: 0;
+}
+
+.task-item-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.task-item-title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Tag row should wrap and not overflow the card width */
+.task-item-tags {
+  display: flex;
+  flex-wrap: nowrap; /* 'wrap' から 'nowrap' に変更 */
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  overflow: hidden; /* 1行からはみ出すタグを隠す */
+}
+
+.task-tag {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-tag-key {
+  opacity: 0.85;
+  margin-right: 0.15rem;
+}
+
+.task-tag-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-tag-more {
+  max-width: 100%;
+}
+
+.task-item-icon {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.task-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.task-item-date {
+  font-size: 0.75rem;
+  color: var(--app-text-secondary);
+}
+
+/* Preview text: clamp lines and break long words/URLs to avoid overflow */
+.task-item-preview {
+  margin: 0.5rem 0 0 0;
+  color: var(--app-text-secondary);
+  font-size: 0.875rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* show up to 2 lines */
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  line-height: 1.4;
+  max-height: calc(1.4em * 2);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.btn-rename-task {
+  padding: 0.25rem;
+  background: transparent;
+  color: var(--app-icon-secondary);
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-rename-task:hover {
+  opacity: 1;
+  color: var(--app-icon-hover);
+  background: var(--app-bg-tertiary);
+  transform: scale(1.1);
+}
+
+.btn-delete-task {
+  padding: 0.25rem;
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-task:hover {
+  opacity: 1;
+  background: #fee2e2;
+  border-color: #fca5a5;
+  transform: scale(1.1);
+}
+
+/* Rename input */
+.rename-input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--app-accent);
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  width: calc(100% - 4rem);
+  margin-right: 0.5rem;
+}
+
+.rename-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-confirm-rename,
+.btn-cancel-rename {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-confirm-rename {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.btn-confirm-rename:hover {
+  background: #a7f3d0;
+}
+
+.btn-cancel-rename {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-cancel-rename:hover {
+  background: #fecaca;
+}
+
+.task-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.task-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--app-bg-secondary);
+  color: var(--app-text-main);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.task-tag-key {
+  color: var(--app-text-secondary);
+  font-weight: 500;
+}
+
+.task-tag-value {
+  color: var(--app-text-main);
+  font-weight: 600;
+}
+
+.task-tag.tag-priority {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.task-tag.tag-priority .task-tag-key {
+  color: #991b1b;
+}
+
+.task-tag.tag-priority .task-tag-value {
+  color: #7f1d1d;
+}
+
+.task-tag.tag-date {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+.task-tag.tag-date .task-tag-key {
+  color: #1e40af;
+}
+
+.task-tag.tag-date .task-tag-value {
+  color: #1e3a8a;
+}
+
+.task-tag-more {
+  color: var(--app-text-secondary);
+  font-size: 0.75rem;
+}
+
+.task-item-preview {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--app-text-secondary);
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.task-browser-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--app-border);
+  background: var(--app-sidebar-bg);
+  text-align: center;
+}
+
+.task-count {
+  font-size: 0.875rem;
+  color: var(--app-text-secondary);
+}
+
+/* Delete confirmation dialog */
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.delete-confirm-dialog {
+  background: var(--app-bg-main);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--app-border);
+}
+
+.delete-confirm-dialog h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+}
+
+.delete-confirm-dialog p {
+  margin: 0.5rem 0;
+  color: var(--app-text-secondary);
+  line-height: 1.5;
+}
+
+.delete-warning {
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+.btn-cancel-delete,
+.btn-confirm-delete {
+  padding: 0.625rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 100px;
+}
+
+.btn-cancel-delete {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-cancel-delete:hover {
+  background: #e5e7eb;
+}
+
+.btn-confirm-delete {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-confirm-delete:hover {
+  background: #b91c1c;
+}

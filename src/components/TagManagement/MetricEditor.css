@@ -1,0 +1,210 @@
+.metric-editor {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--ts-border);
+  border-radius: 8px;
+  background: var(--ts-bg-secondary);
+}
+
+.metric-editor h4 {
+  margin: 0 0 1.5rem 0;
+  color: var(--ts-text-main);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.metric-editor .field-group {
+  margin-bottom: 1.5rem;
+}
+
+.metric-editor label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--ts-text-main);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.metric-editor .required {
+  color: #f44336;
+  margin-left: 0.25rem;
+}
+
+.metric-editor .input-text,
+.metric-editor .select-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--ts-border);
+  border-radius: 4px;
+  background: var(--ts-bg-main);
+  color: var(--ts-text-main);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.metric-editor .input-text:focus,
+.metric-editor .select-field:focus {
+  outline: none;
+  border-color: var(--ts-accent);
+}
+
+.metric-editor .field-hint {
+  padding: 0.75rem;
+  background: var(--ts-bg-tertiary);
+  border: 1px solid var(--ts-border);
+  border-radius: 4px;
+  color: var(--ts-text-secondary);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.metric-editor .form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ts-border);
+}
+
+.metric-editor .btn-save,
+.metric-editor .btn-cancel {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.metric-editor .btn-save {
+  background: var(--ts-accent);
+  color: white;
+}
+
+.metric-editor .btn-save:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.metric-editor .btn-save svg {
+  flex-shrink: 0;
+}
+
+.metric-editor .btn-cancel {
+  background: var(--ts-border-hover);
+  color: var(--ts-text-main);
+}
+
+.metric-editor .btn-cancel:hover {
+  background: var(--ts-border);
+  transform: scale(1.05);
+}
+
+.metric-editor .btn-cancel svg {
+  flex-shrink: 0;
+}
+
+/* フィルタ条件セクション（テーマ対応） */
+.metric-editor .conditions-section {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--ts-border);
+  border-radius: 4px;
+  background: var(--ts-bg-secondary);
+}
+
+.metric-editor .conditions-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ts-text-main);
+}
+
+.metric-editor .condition-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.metric-editor .condition-tag-select,
+.metric-editor .condition-operator,
+.metric-editor .condition-value {
+  padding: 0.5rem;
+  border: 1px solid var(--ts-border);
+  border-radius: 4px;
+  background: var(--ts-bg-main);
+  color: var(--ts-text-main);
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.metric-editor .condition-tag-select:focus,
+.metric-editor .condition-operator:focus,
+.metric-editor .condition-value:focus {
+  outline: none;
+  border-color: var(--ts-accent);
+}
+
+.metric-editor .condition-tag-select {
+  flex: 2;
+}
+
+.metric-editor .condition-operator {
+  width: 140px;
+}
+
+.metric-editor .condition-value {
+  flex: 1;
+}
+
+.metric-editor .btn-remove-condition {
+  padding: 0.5rem 1rem;
+  background: #c72e0f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.metric-editor .btn-remove-condition:hover {
+  background: #a12729;
+}
+
+.metric-editor .btn-add-condition {
+  padding: 0.5rem 1rem;
+  background: var(--ts-accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+  margin-top: 8px;
+}
+
+.metric-editor .btn-add-condition:hover {
+  opacity: 0.9;
+}
+
+/* チェックボックスのスタイル */
+.metric-editor input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--ts-accent);
+}
+
+.metric-editor label[for="useFilter"] {
+  cursor: pointer;
+  user-select: none;
+}
+

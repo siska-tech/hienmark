@@ -1,0 +1,45 @@
+.resizer {
+  background: var(--app-border);
+  position: relative;
+  z-index: 10;
+  transition: background-color 0.2s;
+}
+
+.resizer:hover {
+  background: var(--app-border-hover);
+}
+
+.resizer:active {
+  background: var(--app-accent);
+}
+
+.resizer-horizontal {
+  width: 4px;
+  cursor: col-resize;
+  flex-shrink: 0;
+}
+
+.resizer-vertical {
+  height: 4px;
+  cursor: row-resize;
+  flex-shrink: 0;
+}
+
+.resizer-handle {
+  position: absolute;
+  background: transparent;
+}
+
+.resizer-horizontal .resizer-handle {
+  top: 0;
+  bottom: 0;
+  left: -2px;
+  right: -2px;
+}
+
+.resizer-vertical .resizer-handle {
+  left: 0;
+  right: 0;
+  top: -2px;
+  bottom: -2px;
+}

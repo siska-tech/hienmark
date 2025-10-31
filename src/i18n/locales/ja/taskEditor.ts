@@ -1,0 +1,16 @@
+export const taskEditor = {
+  title: 'タスク編集',
+  preview: 'プレビュー',
+  edit: '編集',
+  saving: '保存中...',
+  saved: '保存しました',
+  autoSave: '自動保存',
+  unsavedChanges: '未保存の変更があります',
+  tags: 'タグ',
+  addTag: 'タグを追加',
+  selectCategory: 'タグを選択',
+  selectValue: '値を選択',
+  enterValue: '値を入力',
+  invalidValue: '無効な値です',
+  dropHere: 'ここにドロップ',
+};

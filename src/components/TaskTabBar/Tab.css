@@ -1,0 +1,64 @@
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--app-bg-tertiary);
+  border-right: 1px solid var(--app-border);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  min-width: 120px;
+  max-width: 240px;
+}
+
+.tab:hover {
+  background-color: var(--app-bg-secondary);
+}
+
+.tab.active {
+  background-color: var(--app-content-bg);
+  border-bottom: 2px solid var(--app-accent);
+}
+
+.tab-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--app-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.dirty-indicator {
+  color: var(--app-accent);
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+.tab-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--app-text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.tab-close-btn:hover {
+  background-color: var(--app-bg-secondary);
+  color: var(--app-text-main);
+}
+

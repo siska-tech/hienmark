@@ -1,0 +1,20 @@
+{
+  "filters": [
+    {
+      "name": "High Priority",
+      "description": null,
+      "expression": {
+        "condition": {
+          "tagKey": "priority",
+          "operator": "==",
+          "value": "high"
+        },
+        "expressions": null,
+        "logicalOperator": null
+      },
+      "createdAt": "2025-10-31T15:48:09.669Z",
+      "updatedAt": "2025-10-31T15:48:09.669Z"
+    }
+  ],
+  "sorts": []
+}

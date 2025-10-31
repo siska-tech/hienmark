@@ -1,0 +1,18 @@
+export const app = {
+  title: 'HienMark',
+  subtitle: 'Local-first Task Management Editor',
+  welcome: 'Welcome to HienMark',
+  welcomeMessage: 'Open a workspace to get started',
+  openWorkspace: 'Open Workspace',
+  loading: 'Loading workspace...',
+  noTaskSelected: 'Select a task from the sidebar to view and edit',
+  tagManagement: 'Tag Management',
+  tagSettings: 'Settings',
+  showTasks: 'Show Tasks',
+  initializing: 'Initializing application...',
+  loadingLanguage: 'Loading language settings...',
+  initializingComponents: 'Initializing components...',
+  preparingWorkspace: 'Preparing workspace...',
+  finalizing: 'Finalizing...',
+  ready: 'Ready',
+};

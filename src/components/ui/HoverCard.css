@@ -1,0 +1,37 @@
+.hovercard-trigger {
+  display: inline-flex;
+}
+
+.hovercard-content {
+  position: fixed;
+  z-index: 9999;
+  max-width: 320px;
+  background: var(--app-bg-main);
+  color: var(--app-text-main);
+  border: 1px solid var(--app-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  padding: 0.75rem;
+}
+
+.hovercard-content .hovercard-title {
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.hovercard-content .hovercard-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.hovercard-content .tag-chip {
+  background: var(--app-bg-secondary);
+  border: 1px solid var(--app-border);
+  border-radius: 9999px;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+

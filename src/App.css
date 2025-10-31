@@ -1,0 +1,257 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.app-header {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-header h1 .app-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.app-header h1 .subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.workspace-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workspace-actions-left,
+.workspace-actions-right {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.workspace-path {
+  font-size: 0.75rem;
+  font-family: monospace;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-actions-right {
+  margin-left: auto;
+}
+
+.btn-workspace-change,
+.btn-tag-manager,
+.btn-tag-settings,
+.btn-template-manager,
+.btn-analysis-dashboard {
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.375rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Active/Inactive states for workspace action buttons */
+.btn-tag-manager.active,
+.btn-tag-settings.active,
+.btn-template-manager.active,
+.btn-analysis-dashboard.active {
+  background: rgba(255, 255, 255, 0.85);
+  color: #4b2e83; /* slightly darker accent for contrast */
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.25) inset;
+}
+
+.btn-tag-manager.inactive,
+.btn-tag-settings.inactive,
+.btn-template-manager.inactive,
+.btn-analysis-dashboard.inactive {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.35);
+  opacity: 0.85;
+}
+
+.btn-workspace-change:hover,
+.btn-tag-manager:hover,
+.btn-tag-settings:hover,
+.btn-template-manager:hover,
+.btn-analysis-dashboard:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+.app-main {
+  flex: 1;
+  overflow: hidden;
+  background: var(--app-workspace-bg);
+  width: 100%;
+  max-width: 100%;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  font-size: 1.125rem;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+.welcome h2 {
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--app-text-main);
+}
+
+.welcome p {
+  margin: 0 0 2rem 0;
+  font-size: 1.125rem;
+  color: var(--app-text-secondary);
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: var(--app-accent);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.workspace-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* AnalysisDashboard専用：workspace-container内でスクロール */
+.workspace-container-analysis {
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.workspace-container-analysis > * {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-sidebar {
+  flex-shrink: 0;
+  background: var(--app-sidebar-bg);
+  overflow: hidden;
+  border-right: 1px solid var(--app-border);
+}
+
+.workspace-content {
+  flex: 1;
+  overflow: hidden;
+  background: var(--app-content-bg);
+  min-width: 0; /* Flexbox overflow fix */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.workspace-editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.task-editor {
+  padding: 0;
+  height: 100%;
+}
+
+.no-task-selected {
+  padding: 2rem;
+}
+
+.task-editor h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+}
+
+.placeholder {
+  color: var(--app-text-secondary);
+  font-style: italic;
+}
+
+.no-task-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--app-text-secondary);
+  font-size: 1.125rem;
+}
