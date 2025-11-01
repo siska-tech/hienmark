@@ -27,8 +27,6 @@ HienMarkプロジェクトへの貢献に興味を持っていただき、あり
    npm run tauri dev
    ```
 
-詳細は [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) を参照してください。
-
 ## 📋 貢献の方法
 
 ### イシューの報告
@@ -189,8 +187,7 @@ cargo test
 コードの変更に伴ってドキュメントも更新してください：
 
 - **README.md** - 主要な機能変更の場合
-- **docs/requirements.md** - 新しい要件の追加
-- **docs/implementation-spec.md** - アーキテクチャや技術仕様の変更
+- **docs/requirements/README.md** - 新しい要件の追加
 - **CLAUDE.md** - AI開発支援用の情報更新
 
 ## 🔍 レビュープロセス
