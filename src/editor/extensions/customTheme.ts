@@ -5,6 +5,14 @@ import { EditorView } from '@codemirror/view';
  * CodeMirror用のカスタムテーマ
  * アプリケーションのテーマに応じて動的に適用される
  */
+/**
+ * 現在のテーマがダークテーマかどうかを判定
+ */
+function isDarkTheme(): boolean {
+  const theme = document.documentElement.getAttribute('data-theme');
+  return theme === 'hienmark-dark';
+}
+
 export function createCustomTheme(): Extension {
   return EditorView.theme({
     '&': {
@@ -34,7 +42,11 @@ export function createCustomTheme(): Extension {
       minWidth: '3ch',
     },
     '.cm-cursor': {
-      borderLeftColor: 'var(--app-cursor-color, var(--app-text-main))',
+      borderLeftColor: 'var(--app-cursor-color, var(--app-text-main)) !important',
+      borderLeftWidth: '2px !important',
+      borderLeftStyle: 'solid !important',
+      backgroundColor: 'transparent !important',
+      transition: 'border-left-color 0.2s ease',
     },
     '.cm-selectionBackground': {
       backgroundColor: 'var(--app-accent)',
@@ -146,6 +158,6 @@ export function createCustomTheme(): Extension {
     '.cm-scroller::-webkit-scrollbar-thumb:hover': {
       backgroundColor: 'var(--app-border-hover)',
     },
-  }, { dark: false });
+  }, { dark: isDarkTheme() });
 }
 

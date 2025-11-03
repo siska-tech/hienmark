@@ -206,6 +206,57 @@
   background: var(--app-sidebar-bg);
   overflow: hidden;
   border-right: 1px solid var(--app-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-sidebar-bg);
+}
+
+.sidebar-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--app-border);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--app-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.sidebar-tab:last-child {
+  border-right: none;
+}
+
+.sidebar-tab:hover {
+  background: var(--app-bg-tertiary);
+  color: var(--app-text-main);
+}
+
+.sidebar-tab.active {
+  background: var(--app-bg-tertiary);
+  color: var(--app-accent);
+  font-weight: 600;
+}
+
+.sidebar-tab svg {
+  flex-shrink: 0;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .workspace-content {

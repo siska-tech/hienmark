@@ -1,3 +1,6 @@
 # ローカル用ファイル
 /memo/
-/local/
+
+# HienMarkワークスペースデータ（開発ログディレクトリ内の一時ファイル）
+.hienmark/
+.hienmark.json

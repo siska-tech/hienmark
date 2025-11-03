@@ -200,6 +200,12 @@
   flex-shrink: 0;
 }
 
+.editor-pane.drag-over {
+  background: rgba(14, 99, 156, 0.05);
+  outline: 2px dashed #0e639c;
+  outline-offset: -2px;
+}
+
 /* Editor and preview pane widths are set dynamically via inline styles */
 
 .editor-pane.full {
@@ -235,6 +241,7 @@
   padding: 1rem;
   color: var(--app-text-main);
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 .preview-content h1 {
@@ -291,6 +298,48 @@
 .preview-content pre code {
   background: none;
   padding: 0;
+  border: none;
+}
+
+/* Table styles */
+.preview-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.preview-content table thead {
+  background-color: rgba(102, 126, 234, 0.15);
+}
+
+.preview-content table th {
+  text-align: left;
+  padding: 0.75rem;
+  font-weight: 600;
+  color: var(--app-text-main);
+  border-bottom: 2px solid var(--app-accent);
+  vertical-align: middle;
+  background-color: rgba(102, 126, 234, 0.15);
+}
+
+.preview-content table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--app-border);
+  color: var(--app-text-main);
+  vertical-align: middle;
+}
+
+.preview-content table tbody tr:nth-child(odd) {
+  background-color: var(--app-bg-secondary);
+}
+
+.preview-content table tbody tr:hover {
+  background-color: var(--app-bg-tertiary);
+}
+
+.preview-content table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .task-editor-footer {

@@ -1,6 +1,6 @@
 {
   "name": "hienmark",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Local-first task management editor with Markdown and tag-based analysis",
   "type": "module",
   "scripts": {
@@ -28,6 +28,9 @@
     "@tauri-apps/plugin-dialog": "^2.0.0",
     "@tauri-apps/plugin-fs": "^2.0.0",
     "@tauri-apps/plugin-store": "^2.4.0",
+    "@tiptap/pm": "^3.10.1",
+    "@tiptap/react": "^3.10.1",
+    "@tiptap/starter-kit": "^3.10.1",
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/react-window": "^1.8.8",
@@ -48,9 +51,12 @@
     "@typescript-eslint/parser": "^8.15.0",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^2.1.8",
+    "eastasianwidth": "^0.3.0",
     "eslint": "^9.16.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.14",
+    "get-east-asian-width": "^1.4.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.7.2",
     "vite": "^6.0.3",
     "vitest": "^2.1.8"

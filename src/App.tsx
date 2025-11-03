@@ -12,6 +12,7 @@ import { Settings } from './components/TagManagement/Settings';
 import { TemplateManager } from './components/TemplateManagement';
 import { TemplateSelector } from './components/TemplateSelector';
 import { AnalysisDashboard } from './components/Analysis';
+import { FolderTree } from './components/FolderTree';
 import { Resizer } from './components/Resizer';
 import { SplashScreen } from './components/SplashScreen';
 import { TitleBar } from './components/TitleBar';
@@ -54,6 +55,7 @@ function AppContent() {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
   const [sidebarWidth, setSidebarWidth] = useState(320);
+  const [sidebarView, setSidebarView] = useState<'tasks' | 'folders'>('tasks');
 
   const handleOpenWorkspace = async () => {
     await openWorkspace();
@@ -464,16 +466,53 @@ function AppContent() {
             ) : (
               <>
                 <aside className="workspace-sidebar" style={{ width: `${sidebarWidth}px` }}>
-                  <TaskBrowser
-                    tasks={workspace.tasks}
-                    onTaskSelect={handleTaskSelect}
-                    onTaskCreate={handleTaskCreate}
-                    onTaskDelete={handleTaskDelete}
-                    onTaskRename={handleTaskRename}
-                    workspacePath={workspace.rootPath}
-                    tagConfigs={tagConfigs}
-                    selectedTaskId={selectedTaskId || undefined}
-                  />
+                  <div className="sidebar-tabs">
+                    <button
+                      className={`sidebar-tab ${sidebarView === 'tasks' ? 'active' : ''}`}
+                      onClick={() => setSidebarView('tasks')}
+                      title="Tasks"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                      </svg>
+                      <span>Tasks</span>
+                    </button>
+                    <button
+                      className={`sidebar-tab ${sidebarView === 'folders' ? 'active' : ''}`}
+                      onClick={() => setSidebarView('folders')}
+                      title="Folders"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                      </svg>
+                      <span>Folders</span>
+                    </button>
+                  </div>
+                  <div className="sidebar-content">
+                    {sidebarView === 'tasks' ? (
+                      <TaskBrowser
+                        tasks={workspace.tasks}
+                        onTaskSelect={handleTaskSelect}
+                        onTaskCreate={handleTaskCreate}
+                        onTaskDelete={handleTaskDelete}
+                        onTaskRename={handleTaskRename}
+                        workspacePath={workspace.rootPath}
+                        tagConfigs={tagConfigs}
+                        selectedTaskId={selectedTaskId || undefined}
+                      />
+                    ) : (
+                      <FolderTree
+                        tasks={workspace.tasks}
+                        workspacePath={workspace.rootPath}
+                        onTaskSelect={handleTaskSelect}
+                        selectedTaskId={selectedTaskId || undefined}
+                      />
+                    )}
+                  </div>
                 </aside>
 
                 <Resizer onResize={handleSidebarResize} direction="horizontal" />

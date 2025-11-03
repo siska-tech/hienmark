@@ -5,6 +5,7 @@ mod commands;
 mod data_models;
 mod service;
 mod utils;
+mod repository;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -31,8 +32,11 @@ pub fn run() {
       commands::save_task,
       commands::delete_task,
       commands::rename_task,
+      commands::create_folder,
+      commands::move_task,
       commands::get_tag_index,
       commands::rename_tag,
+      commands::copy_asset_to_workspace,
       commands::delete_tag,
       commands::get_workspace_config,
       commands::update_workspace_config,

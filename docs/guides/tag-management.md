@@ -266,8 +266,7 @@ due_date: 2025-12-31
 
 ## 関連機能
 
-- [テンプレート機能ガイド](tag-templates.md) - タグテンプレートの使い方
+- [タグテンプレート機能](tag-templates.md) - タグテンプレートの使い方
 - [分析ダッシュボードガイド](analysis-dashboard.md) - タグデータの可視化
-- [テンプレートクイックスタート](template-quick-start.md) - テンプレート機能の基本
 - [ワークスペース管理ガイド](workspace-management.md) - ワークスペースの設定と管理
 

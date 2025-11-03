@@ -3,7 +3,6 @@
   flex-direction: column;
   height: 100%;
   background: var(--app-sidebar-bg);
-  border-right: 1px solid var(--app-border);
 }
 
 .task-browser-header {

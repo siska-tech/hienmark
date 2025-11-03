@@ -1,6 +1,6 @@
 [package]
 name = "hienmark"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local-first task management editor with Markdown and tag-based analysis"
 authors = ["HienMark Team"]
 license = "MIT"
@@ -19,7 +19,7 @@ tauri-build = { version = "2.5.1", features = [] }
 
 [dependencies]
 # Tauri
-tauri = { version = "2.9.1", features = ["unstable"] }
+tauri = { version = "2.9.1", features = ["protocol-asset", "unstable"] }
 tauri-plugin-log = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
@@ -44,6 +44,9 @@ notify = "6"
 
 # Regular expressions
 regex = "1"
+
+# Database
+rusqlite = { version = "0.32", features = ["bundled", "chrono"] }
 
 # Logging
 log = "0.4"

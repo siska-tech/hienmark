@@ -3,7 +3,6 @@ import { AnalysisService } from '../../services/analysisService';
 import { loadAnalysisSettings } from '../../services/analysisSettingsService';
 import { useTagSchema } from '../../hooks/useTagSchema';
 import { useTags } from '../../hooks/useTags';
-import { MermaidPreview } from '../TaskEditor/MermaidPreview';
 import { EChartsWrapper } from './EChartsWrapper';
 import { GanttChart } from '../GanttChart';
 import { TaskDetailModal, type TaskData } from './TaskDetailModal';
@@ -25,8 +24,6 @@ interface AnalysisDashboardProps {
   onOpenTask?: (taskId: string) => void;
 }
 
-type ChartMode = 'preview' | 'source' | 'echarts';
-
 /**
  * 分析ダッシュボードコンポーネント
  * チャート設定（マッピング）機能とタブUIを実装
@@ -37,7 +34,6 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
 }) => {
   const { t } = useLanguage();
   const [chartType, setChartType] = useState<ChartType>('gantt');
-  const [mode, setMode] = useState<ChartMode>('echarts');
   const [mermaidCode, setMermaidCode] = useState<string>('');
   const [echartsOption, setEchartsOption] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -460,29 +456,6 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             </select>
           </div>
 
-          <div className="mode-toggle">
-            <button
-              className={mode === 'echarts' ? 'active' : ''}
-              onClick={() => setMode('echarts')}
-              disabled={loading}
-            >
-              {t.analysis.modes.echarts}
-            </button>
-            <button
-              className={mode === 'preview' ? 'active' : ''}
-              onClick={() => setMode('preview')}
-              disabled={loading}
-            >
-              {t.analysis.modes.mermaid}
-            </button>
-            <button
-              className={mode === 'source' ? 'active' : ''}
-              onClick={() => setMode('source')}
-              disabled={loading}
-            >
-              {t.analysis.modes.source}
-            </button>
-          </div>
 
           {/* Date Range Filter */}
           <div className="date-filter">
@@ -670,36 +643,23 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
           </div>
         ) : (
           <div className="chart-container">
-            {mode === 'echarts' && chartType === 'gantt' ? (
+            {chartType === 'gantt' ? (
               <div className="echarts-preview-wrapper">
                 <GanttChart data={ganttProject || undefined} readOnly={true} />
               </div>
-            ) : mode === 'echarts' && echartsOption ? (
+            ) : echartsOption ? (
               <div className="echarts-preview-wrapper">
                 <EChartsWrapper 
                   option={echartsOption} 
                   height="100%"
                   width="100%"
                   onTaskClick={(task) => {
-                    if (chartType === 'gantt') {
-                      setSelectedTask(task);
-                    }
+                    setSelectedTask(task);
                   }}
                   showExportButtons={true}
                 />
               </div>
-            ) : mode === 'preview' ? (
-              <div className="mermaid-preview-wrapper">
-                <MermaidPreview content={mermaidCode} />
-              </div>
-            ) : (
-              <textarea
-                className="mermaid-editor"
-                value={mermaidCode}
-                readOnly
-                placeholder={t.analysis.mermaidPlaceholder}
-              />
-            )}
+            ) : null}
           </div>
         )}
       </div>

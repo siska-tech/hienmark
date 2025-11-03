@@ -185,3 +185,73 @@ pub async fn get_workspace_config(
 ) -> Result<crate::models::WorkspaceConfig, String> {
     WorkspaceService::load_config(&workspace_path)
 }
+
+/// アセットファイルをワークスペースにコピー
+///
+/// # Arguments
+/// * `workspace_path` - ワークスペースのルートパス
+/// * `source_path` - コピー元ファイルのパス
+/// * `task_id` - アセットを関連付けるタスクID
+///
+/// # Returns
+/// * `Result<String, String>` - 相対パス（Markdown記法用）
+#[tauri::command]
+pub async fn copy_asset_to_workspace(
+    workspace_path: String,
+    source_path: String,
+    task_id: String,
+) -> Result<String, String> {
+    let workspace_root = PathBuf::from(&workspace_path);
+    let source = PathBuf::from(&source_path);
+    
+    let service = WorkspaceService::new();
+    service
+        .copy_asset_to_workspace(&workspace_root, &source, &task_id)
+        .map_err(|e| format!("Failed to copy asset: {}", e))
+}
+
+/// ディレクトリを作成
+///
+/// # Arguments
+/// * `workspace_path` - ワークスペースのルートパス
+/// * `folder_path` - 作成するディレクトリのパス（相対パス）
+///
+/// # Returns
+/// * `Result<(), String>` - 作成結果
+#[tauri::command]
+pub async fn create_folder(
+    workspace_path: String,
+    folder_path: String,
+) -> Result<(), String> {
+    let root_path = PathBuf::from(&workspace_path);
+
+    let service = WorkspaceService::new();
+    service
+        .create_folder(&root_path, &folder_path)
+        .map_err(|e| format!("Failed to create folder: {}", e))
+}
+
+/// タスクをフォルダ間で移動
+///
+/// # Arguments
+/// * `workspace_path` - ワークスペースのルートパス
+/// * `task_id` - タスクID（ファイル名）
+/// * `source_path` - 移動元の相対パス
+/// * `dest_path` - 移動先の相対パス
+///
+/// # Returns
+/// * `Result<(), String>` - 移動結果
+#[tauri::command]
+pub async fn move_task(
+    workspace_path: String,
+    task_id: String,
+    source_path: String,
+    dest_path: String,
+) -> Result<(), String> {
+    let root_path = PathBuf::from(&workspace_path);
+
+    let service = WorkspaceService::new();
+    service
+        .move_task(&root_path, &task_id, &source_path, &dest_path)
+        .map_err(|e| format!("Failed to move task: {}", e))
+}

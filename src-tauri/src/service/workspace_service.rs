@@ -222,6 +222,53 @@ impl WorkspaceService {
         Ok(task)
     }
 
+    /// アセットファイルをワークスペースにコピー
+    ///
+    /// # Arguments
+    /// * `workspace_root` - ワークスペースのルートディレクトリ
+    /// * `source_path` - コピー元ファイルのパス
+    /// * `task_id` - アセットを関連付けるタスクID
+    ///
+    /// # Returns
+    /// * `Result<String, io::Error>` - 相対パス（Markdown記法用）
+    pub fn copy_asset_to_workspace(
+        &self,
+        workspace_root: &Path,
+        source_path: &Path,
+        _task_id: &str,
+    ) -> Result<String, io::Error> {
+        // .hienmark/assetsディレクトリのパス
+        let assets_dir = workspace_root.join(".hienmark").join("assets");
+        
+        // ディレクトリが存在しない場合は作成
+        if !assets_dir.exists() {
+            fs::create_dir_all(&assets_dir)?;
+        }
+        
+        // 一意なファイル名を生成（ファイル名_タイムスタンプ.拡張子）
+        let file_stem = source_path
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .unwrap_or("file");
+        let extension = source_path
+            .extension()
+            .and_then(|e| e.to_str())
+            .map(|e| format!(".{}", e))
+            .unwrap_or_default();
+        let timestamp = chrono::Utc::now().timestamp();
+        let unique_name = format!("{}_{}{}", file_stem, timestamp, extension);
+        let dest_path = assets_dir.join(&unique_name);
+        
+        // ファイルをコピー
+        fs::copy(source_path, &dest_path)?;
+        
+        // 相対パスを生成（Markdown記法用）
+        // .hienmark/assets/file_123.png のような形式
+        let relative_path = format!(".hienmark/assets/{}", unique_name);
+        
+        Ok(relative_path)
+    }
+
     /// タスクをリネーム（ファイル名変更 + depends_on参照の更新）
     ///
     /// # Arguments
@@ -297,6 +344,89 @@ impl WorkspaceService {
                 fs::write(&file_path, updated_content)?;
             }
         }
+
+        Ok(())
+    }
+
+    /// ディレクトリを作成
+    ///
+    /// # Arguments
+    /// * `workspace_root` - ワークスペースのルート
+    /// * `folder_path` - 作成するディレクトリのパス（相対パス）
+    ///
+    /// # Returns
+    /// * `Result<(), io::Error>` - 作成結果
+    pub fn create_folder(&self, workspace_root: &Path, folder_path: &str) -> Result<(), io::Error> {
+        let full_path = workspace_root.join(folder_path);
+        
+        // ディレクトリが既に存在する場合はエラー
+        if full_path.exists() {
+            return Err(io::Error::new(
+                io::ErrorKind::AlreadyExists,
+                format!("Folder already exists: {}", folder_path),
+            ));
+        }
+
+        // ディレクトリを作成
+        fs::create_dir_all(&full_path)?;
+
+        Ok(())
+    }
+
+    /// タスクファイルをフォルダ間で移動
+    ///
+    /// # Arguments
+    /// * `workspace_root` - ワークスペースのルート
+    /// * `task_id` - タスクID（ファイル名）
+    /// * `source_path` - 移動元の相対パス
+    /// * `dest_path` - 移動先の相対パス
+    ///
+    /// # Returns
+    /// * `Result<(), io::Error>` - 移動結果
+    pub fn move_task(
+        &self,
+        workspace_root: &Path,
+        task_id: &str,
+        source_path: &str,
+        dest_path: &str,
+    ) -> Result<(), io::Error> {
+        let old_file_path = if source_path.is_empty() {
+            workspace_root.join(format!("{}.md", task_id))
+        } else {
+            workspace_root.join(source_path).join(format!("{}.md", task_id))
+        };
+        
+        let new_file_path = if dest_path.is_empty() {
+            workspace_root.join(format!("{}.md", task_id))
+        } else {
+            workspace_root.join(dest_path).join(format!("{}.md", task_id))
+        };
+
+        // 古いファイルが存在しない場合はエラー
+        if !old_file_path.exists() {
+            return Err(io::Error::new(
+                io::ErrorKind::NotFound,
+                format!("Task file not found: {}", old_file_path.display()),
+            ));
+        }
+
+        // 新しいファイルが既に存在する場合はエラー
+        if new_file_path.exists() {
+            return Err(io::Error::new(
+                io::ErrorKind::AlreadyExists,
+                format!("Task file already exists at destination: {}", new_file_path.display()),
+            ));
+        }
+
+        // 移動先のディレクトリが存在しない場合は作成
+        if let Some(parent) = new_file_path.parent() {
+            if !parent.exists() {
+                fs::create_dir_all(parent)?;
+            }
+        }
+
+        // ファイルを移動
+        fs::rename(&old_file_path, &new_file_path)?;
 
         Ok(())
     }

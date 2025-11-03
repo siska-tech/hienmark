@@ -1,24 +1,17 @@
-/**
- * TaskEditorコンポーネント（リファクタリング版）
- *
- * アーキテクチャ原則:
- * 1. Front Matterの唯一の真実の源: currentTask.frontMatter (Reactステート)
- * 2. CodeMirrorは本文のみを管理
- * 3. タグ編集はGUI (TagEditorPanel) が排他的に担当
- * 4. isDirtyはApp.tsxで一元管理（ローカルステート廃止）
- */
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine, ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
 import MarkdownIt from 'markdown-it';
 import DOMPurify from 'dompurify';
+import mermaid from 'mermaid';
+import { invoke, convertFileSrc } from '@tauri-apps/api/core';
+import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 import type { Task, TagIndex, EditorState as TabEditorState } from '../../types/task';
-import { MermaidPreview } from './MermaidPreview';
 import { tagAutocomplete } from '../../editor/extensions/tagAutocomplete';
 import { createCustomTheme } from '../../editor/extensions/customTheme';
+import { tableFormatterExtension } from '../../editor/extensions/tableFormatter';
 import { Resizer } from '../Resizer';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTemplates } from '../../hooks/useTemplates';
@@ -49,12 +42,21 @@ interface TaskEditorProps {
 interface MermaidDiagram {
   id: string;
   content: string;
+  placeholder: string; // HTML内のプレースホルダー
 }
 
 const md = new MarkdownIt({
-  html: false,
+  html: true, // HTMLブロックを許可（プレースホルダーdivタグが正しく処理されるように）
   linkify: true,
   typographer: true,
+});
+
+// Mermaidの初期化（セキュリティ設定）
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'antiscript', // XSS対策
+  fontFamily: 'system-ui, sans-serif',
 });
 
 // ソースマッピング（data-line-number）を挿入するプラグイン
@@ -147,6 +149,61 @@ export function TaskEditor({
 
   const { templates, applyToExistingTask } = useTemplates(workspacePathString);
 
+  // Tauri v2のファイルドロップイベント型定義（ネット上の事例に基づく形式）
+  // 実際のペイロードは { paths: string[] } の形式
+
+  // ファイルドロップハンドラー
+  const handleFileDrop = useCallback(async (filePath: string) => {
+    if (!viewRef.current || !workspacePath) {
+      console.log('[D&D] No editor view or workspace path');
+      return;
+    }
+
+    try {
+      // ファイル拡張子で画像ファイルかチェック
+      const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.svg', '.ico'];
+      const lowerPath = filePath.toLowerCase();
+      const isImage = imageExtensions.some(ext => lowerPath.endsWith(ext));
+      
+      if (!isImage) {
+        console.log('[D&D] Not an image file:', filePath);
+        return;
+      }
+
+      // ★デバッグ用ログを追加
+      console.log(`[D&D] File drop detected. Calling Rust with: ${filePath}`);
+      
+      // Rust側のcopy_asset_to_workspaceコマンドを呼び出し
+      const relativePath = await invoke<string>('copy_asset_to_workspace', {
+        workspacePath: workspacePath,
+        sourcePath: filePath,
+        taskId: task.id,
+      });
+      
+      console.log(`[D&D] Asset copied. Relative path: ${relativePath}`);
+
+      // CodeMirrorにMarkdownを挿入
+      const view = viewRef.current;
+      const cursorPos = view.state.selection.main.head;
+      const fileName = filePath.split(/[/\\]/).pop() || 'image';
+      const markdownInsert = `![${fileName}](${relativePath})\n`;
+      
+      const transaction = view.state.update({
+        changes: {
+          from: cursorPos,
+          insert: markdownInsert,
+        },
+        selection: { anchor: cursorPos + markdownInsert.length },
+      });
+      
+      view.dispatch(transaction);
+      onDirtyChange?.(task.id, true);
+    } catch (error) {
+      console.error('[D&D] Error processing file:', error);
+      alert(`ファイルの挿入に失敗しました: ${error}`);
+    }
+  }, [workspacePath, task.id, onDirtyChange]);
+
   // タスクが変更された時の処理（タスク切り替え時）
   useEffect(() => {
     // タスクが実際に切り替わった場合のみ状態を更新
@@ -168,7 +225,69 @@ export function TaskEditor({
     }
   }, [task.id]);
 
-  // （統合済み）
+  // Tauri v2のファイルドロップイベントリスナーを設定
+  useEffect(() => {
+    console.log('[D&D] Registering file drop listener...');
+    
+    // listen関数を使用（ネット上の事例に基づく形式）
+    const promise = listen('tauri://drag-drop', (event) => {
+      console.log('[D&D] Tauri event received:', event);
+      console.log('[D&D] Event payload:', event.payload);
+      
+      // ペイロードからpathsを取得
+      const paths = (event.payload as { paths: string[] }).paths;
+      
+      if (paths && paths.length > 0) {
+        console.log('[D&D] Files dropped:', paths);
+        // 複数のファイルがドロップされても、最初のファイルのみ処理
+        handleFileDrop(paths[0]);
+      }
+    });
+    
+    // クリーンアップ関数
+    return () => {
+      console.log('[D&D] Cleaning up file drop listener...');
+      // promiseが解決（リスナーが登録完了）したら、返ってきた 'unlisten' 関数を実行する
+      promise.then((unlisten: UnlistenFn) => {
+        console.log('[D&D] Listener unregistered.');
+        unlisten();
+      }).catch((error) => {
+        console.error('[D&D] Error during cleanup:', error);
+      });
+    };
+  }, [handleFileDrop]); // ★依存配列に handleFileDrop のみを指定（workspacePathとtask.idはhandleFileDropの依存配列に含まれているため不要）
+
+  // アクティブなセクションを見つける拡張機能
+  const activeSectionPlugin = ViewPlugin.fromClass(class {
+    update(update: ViewUpdate) {
+      if (update.docChanged || update.selectionSet) {
+        const { state } = update.view;
+        const cursorPos = state.selection.main.head;
+        const doc = state.doc;
+        
+        // カーソル位置より前の最後の見出しを探す
+        const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+        let match;
+        let lastMatch: RegExpMatchArray | null = null;
+        
+        while ((match = headingRegex.exec(doc.toString())) !== null) {
+          const headingEnd = match.index + match[0].length;
+          if (headingEnd <= cursorPos) {
+            lastMatch = match;
+          } else {
+            break;
+          }
+        }
+        
+        if (lastMatch) {
+          const headingText = lastMatch[2];
+          setCurrentHeading(headingText);
+        } else {
+          setCurrentHeading('');
+        }
+      }
+    }
+  });
 
   // CodeMirrorエディタの初期化（タスク切り替え時も再初期化）兼 スクロール同期のセットアップ
   useEffect(() => {
@@ -281,38 +400,6 @@ export function TaskEditor({
     };
   }, [task.id, scrollSync, viewMode]);
 
-  // アクティブなセクションを見つける拡張機能
-  const activeSectionPlugin = ViewPlugin.fromClass(class {
-    update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet) {
-        const { state } = update.view;
-        const cursorPos = state.selection.main.head;
-        const doc = state.doc;
-        
-        // カーソル位置より前の最後の見出しを探す
-        const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-        let match;
-        let lastMatch: RegExpMatchArray | null = null;
-        
-        while ((match = headingRegex.exec(doc.toString())) !== null) {
-          const headingEnd = match.index + match[0].length;
-          if (headingEnd <= cursorPos) {
-            lastMatch = match;
-          } else {
-            break;
-          }
-        }
-        
-        if (lastMatch) {
-          const headingText = lastMatch[2];
-          setCurrentHeading(headingText);
-        } else {
-          setCurrentHeading('');
-        }
-      }
-    }
-  });
-
   // エディタの拡張機能を作成
   function createEditorExtensions() {
     return [
@@ -322,10 +409,12 @@ export function TaskEditor({
       markdown(),
       createCustomTheme(),
       tagAutocomplete(() => tagIndex || null),
+      tableFormatterExtension(),
       keymap.of([...defaultKeymap, ...historyKeymap]),
       // ワードラップ設定
       ...(wordWrap ? [EditorView.lineWrapping] as any : []),
       activeSectionPlugin,
+      // D&DはTauri v2のtauri://file-dropイベントで処理するため、CodeMirror拡張は不要
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           // 本文が変更された
@@ -362,25 +451,49 @@ export function TaskEditor({
 
   // プレビューを更新
   const updatePreview = (bodyContent: string) => {
-    // Mermaidブロックを検出
-    const mermaidRegex = /```mermaid\n([\s\S]*?)\n```/g;
+    // Mermaidブロックを検出（Markdown仕様準拠：行頭のみ検出）
+    // Markdownのフェンス付きコードブロック（```）は行頭にある場合のみ有効
+    // 文中の```mermaidは単なる文字列として扱われるべき
+    const mermaidRegex = /(^|\n)```mermaid\s*\n([\s\S]*?)\n```(?=\n|$)/gm;
     const diagrams: MermaidDiagram[] = [];
-    let diagramIndex = 0;
-    let match;
 
-    while ((match = mermaidRegex.exec(bodyContent)) !== null) {
-      diagrams.push({
-        id: `mermaid-diagram-${diagramIndex++}`,
-        content: match[1],
-      });
+    // Mermaidブロックを検出してプレースホルダー（divタグ）に置き換え
+    // 正規表現のlastIndex問題を回避するため、すべてのマッチを先に取得
+    const matches: RegExpExecArray[] = [];
+    let execMatch: RegExpExecArray | null;
+    while ((execMatch = mermaidRegex.exec(bodyContent)) !== null) {
+      matches.push(execMatch);
     }
 
-    // Mermaidブロックを除去してMarkdownを変換（行番号をずらさないよう改行数を維持）
-    const contentWithoutMermaid = bodyContent.replace(/```mermaid\n([\s\S]*?)\n```/g, (full) => {
-      const newlineCount = (full.match(/\n/g) || []).length;
-      return '\n'.repeat(newlineCount);
-    });
-    const rawHtml = md.render(contentWithoutMermaid);
+    let contentWithPlaceholders = bodyContent;
+    // 後ろから置き換えることで、インデックスのズレを防ぐ
+    for (let i = matches.length - 1; i >= 0; i--) {
+      const match = matches[i];
+      if (!match.index && match.index !== 0) continue; // indexが存在しない場合はスキップ
+      
+      const placeholderId = `mermaid-placeholder-${i}`;
+      // HTMLブロックとして確実に認識されるよう、前後に空行を追加
+      const placeholder = `\n\n<div data-mermaid-placeholder="${placeholderId}"></div>\n\n`;
+      const diagram: MermaidDiagram = {
+        id: `mermaid-diagram-${i}`,
+        content: match[2].trim(), // 前後の空白を削除（match[2]はコンテンツ部分）
+        placeholder: placeholderId,
+      };
+      
+      diagrams.unshift(diagram); // 先頭に追加（順序を保持）
+      
+      // Mermaidブロックをプレースホルダーに置き換え
+      // マッチ全体（前後の改行含む）を置き換え
+      const fullMatch = match[0];
+      const matchIndex = match.index;
+      contentWithPlaceholders = 
+        contentWithPlaceholders.substring(0, matchIndex) +
+        placeholder +
+        contentWithPlaceholders.substring(matchIndex + fullMatch.length);
+    }
+
+    // プレースホルダーを含むMarkdownをレンダリング
+    const rawHtml = md.render(contentWithPlaceholders);
     const sanitizedHtml = DOMPurify.sanitize(rawHtml, {
       ALLOWED_TAGS: [
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -390,19 +503,229 @@ export function TaskEditor({
         'blockquote',
         'a', 'img',
         'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'div', // プレースホルダー用
       ],
-      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'data-line-number'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'data-line-number', 'data-mermaid-placeholder', 'id'],
+    });
+
+    // 画像パスをconvertFileSrcで変換（TauriのCSP対応）
+    let processedHtml = sanitizedHtml;
+    if (workspacePath) {
+      // imgタグのsrc属性を取得して変換
+      processedHtml = processedHtml.replace(/<img([^>]*?)src="([^"]+)"([^>]*?)>/gi, (match, before, srcPath, after) => {
+        // 相対パスの場合、ワークスペースルートからの絶対パスに変換
+        if (srcPath && !srcPath.startsWith('http://') && !srcPath.startsWith('https://') && !srcPath.startsWith('asset:')) {
+          // パス区切り文字を統一（Windows対応）
+          const normalizedWorkspacePath = workspacePath.replace(/\\/g, '/').replace(/\/$/, '');
+          const normalizedSrcPath = srcPath.replace(/\\/g, '/');
+          
+          // 相対パス（例: .hienmark/assets/image.png）を絶対パスに変換
+          let absolutePath: string;
+          
+          if (normalizedSrcPath.startsWith('./')) {
+            // 相対パス（例: ./hienmark/assets/image.png）
+            absolutePath = normalizedWorkspacePath + '/' + normalizedSrcPath.substring(2);
+          } else if (normalizedSrcPath.startsWith('../')) {
+            // 親ディレクトリ参照はワークスペースルートからの相対として処理
+            absolutePath = normalizedWorkspacePath + '/' + normalizedSrcPath;
+          } else if (normalizedSrcPath.startsWith('/')) {
+            // ルートからの絶対パス（通常はワークスペースルートからの相対として扱う）
+            absolutePath = normalizedWorkspacePath + normalizedSrcPath;
+          } else {
+            // ファイル名のみまたは相対パス（ワークスペースルートからの相対）
+            absolutePath = normalizedWorkspacePath + '/' + normalizedSrcPath;
+          }
+          
+          // convertFileSrcで変換
+          const convertedSrc = convertFileSrc(absolutePath);
+          console.log('[Image] Converting path:', { original: srcPath, absolute: absolutePath, converted: convertedSrc });
+          return `<img${before}src="${convertedSrc}"${after}>`;
+        }
+        return match; // 変換不要な場合はそのまま
+      });
+    }
+
+    // プレースホルダーをMermaidダイアグラムのコンテナに置き換え
+    let finalHtml = processedHtml;
+    diagrams.forEach((diagram) => {
+      const containerHtml = `<div id="container-${diagram.id}" class="mermaid-container"></div>`;
+      
+      // より柔軟なパターンマッチング（属性の順序や空白を許容）
+      // 例: <div data-mermaid-placeholder="..." ></div> または <div data-mermaid-placeholder="..."></div>
+      const patterns = [
+        // 基本的なパターン（閉じタグあり）
+        new RegExp(`<div[^>]*data-mermaid-placeholder="${diagram.placeholder}"[^>]*>\\s*</div>`, 'gi'),
+        // pタグで囲まれている場合
+        new RegExp(`<p>\\s*<div[^>]*data-mermaid-placeholder="${diagram.placeholder}"[^>]*>\\s*</div>\\s*</p>`, 'gi'),
+        // 自己閉じタグ形式
+        new RegExp(`<div[^>]*data-mermaid-placeholder="${diagram.placeholder}"[^>]*\\s*/?>`, 'gi'),
+      ];
+      
+      // 各パターンを順番に試す（一度マッチしたら次のパターンに進む）
+      let replaced = false;
+      for (const pattern of patterns) {
+        // test()はlastIndexを更新するため、match()を使用
+        const match = finalHtml.match(pattern);
+        if (match) {
+          finalHtml = finalHtml.replace(pattern, containerHtml);
+          replaced = true;
+          break;
+        }
+      }
+      
+      // どのパターンにもマッチしない場合、エスケープされた形式を検索
+      if (!replaced) {
+        // プレースホルダーIDで検索（エスケープされていない形式）
+        const placeholderIdIndex = finalHtml.indexOf(diagram.placeholder);
+        if (placeholderIdIndex >= 0) {
+          // エスケープされたdivタグを含むpタグを見つける
+          const pTagStart = finalHtml.lastIndexOf('<p', placeholderIdIndex);
+          if (pTagStart >= 0) {
+            const pTagEnd = finalHtml.indexOf('</p>', placeholderIdIndex);
+            if (pTagEnd >= 0) {
+              const pContent = finalHtml.substring(pTagStart, pTagEnd + 4);
+              // エスケープされたプレースホルダーdivを含む場合のみ置き換え
+              // プレースホルダーIDが含まれていればOK（エスケープされたdivも含む）
+              if (pContent.includes('&lt;div') && pContent.includes(diagram.placeholder)) {
+                // 置き換え（最初のマッチのみ）
+                finalHtml = finalHtml.substring(0, pTagStart) + containerHtml + finalHtml.substring(pTagEnd + 4);
+                replaced = true;
+              }
+            }
+          }
+        }
+      }
+      
+      // それでも見つからない場合、エスケープされた形式を直接検索・置き換え
+      if (!replaced) {
+        // エスケープされたプレースホルダーを含むpタグ全体を置き換え
+        // シンプルな文字列検索ベースのアプローチ
+        const escapedDivStart = `&lt;div`;
+        const placeholderIdStr = diagram.placeholder;
+        const escapedDivEnd = `&gt;&lt;/div&gt;`;
+        
+        // エスケープされたdivタグの開始位置を探す
+        let searchIndex = 0;
+        while (true) {
+          const divStartIndex = finalHtml.indexOf(escapedDivStart, searchIndex);
+          if (divStartIndex < 0) break;
+          
+          // そのdivタグ内にプレースホルダーIDがあるか確認
+          const divEndIndex = finalHtml.indexOf(escapedDivEnd, divStartIndex);
+          if (divEndIndex >= 0) {
+            const divContent = finalHtml.substring(divStartIndex, divEndIndex + escapedDivEnd.length);
+            if (divContent.includes(placeholderIdStr) && divContent.includes('data-mermaid-placeholder')) {
+              // このdivタグを含むpタグを見つける
+              const pTagStart = finalHtml.lastIndexOf('<p', divStartIndex);
+              if (pTagStart >= 0) {
+                const pTagEnd = finalHtml.indexOf('</p>', divEndIndex);
+                if (pTagEnd >= 0) {
+                  // 置き換え
+                  finalHtml = finalHtml.substring(0, pTagStart) + containerHtml + finalHtml.substring(pTagEnd + 4);
+                  replaced = true;
+                  break;
+                }
+              }
+            }
+          }
+          searchIndex = divEndIndex >= 0 ? divEndIndex : divStartIndex + 1;
+        }
+      }
     });
 
     // 🔽 --- DEBUG START --- 🔽
     // DOMPurify通過後のHTMLをコンソールで確認
-    console.log('[DEBUG ScrollSync-1] Sanitized HTML (head):', sanitizedHtml.substring(0, 500));
-    console.log('[DEBUG ScrollSync-1] HTML includes data-line-number?', sanitizedHtml.includes('data-line-number'));
+    console.log('[DEBUG Mermaid] Diagrams count:', diagrams.length);
+    
+    // プレースホルダーの実際の形式を確認（全体を検索）
+    const allPlaceholderMatches = sanitizedHtml.match(/data-mermaid-placeholder[^>]*/g);
+    console.log('[DEBUG Mermaid] All placeholder matches in sanitized:', allPlaceholderMatches);
+    
+    diagrams.forEach((diagram) => {
+      const placeholderStr = `data-mermaid-placeholder="${diagram.placeholder}"`;
+      const placeholderIndex = sanitizedHtml.indexOf(placeholderStr);
+      if (placeholderIndex >= 0) {
+        const contextStart = Math.max(0, placeholderIndex - 100);
+        const contextEnd = Math.min(sanitizedHtml.length, placeholderIndex + 200);
+        console.log(`[DEBUG Mermaid] Placeholder context for ${diagram.placeholder}:`, sanitizedHtml.substring(contextStart, contextEnd));
+      } else {
+        // プレースホルダーが見つからない場合、data-mermaid-placeholderを含む部分を探す
+        const anyPlaceholderIndex = sanitizedHtml.indexOf('data-mermaid-placeholder');
+        if (anyPlaceholderIndex >= 0) {
+          const contextStart = Math.max(0, anyPlaceholderIndex - 100);
+          const contextEnd = Math.min(sanitizedHtml.length, anyPlaceholderIndex + 200);
+          console.log(`[DEBUG Mermaid] Found some placeholder at:`, sanitizedHtml.substring(contextStart, contextEnd));
+        }
+      }
+    });
+    
+    console.log('[DEBUG Mermaid] Final HTML (head):', finalHtml.substring(0, 500));
+    const allFinalPlaceholderMatches = finalHtml.match(/data-mermaid-placeholder[^>]*/g);
+    console.log('[DEBUG Mermaid] All placeholder matches in final:', allFinalPlaceholderMatches);
+    console.log('[DEBUG Mermaid] Contains placeholder?', finalHtml.includes('data-mermaid-placeholder'));
+    diagrams.forEach((diagram) => {
+      const hasPlaceholder = finalHtml.includes(`data-mermaid-placeholder="${diagram.placeholder}"`);
+      const hasContainer = finalHtml.includes(`id="container-${diagram.id}"`);
+      console.log(`[DEBUG Mermaid] Diagram ${diagram.id}: placeholder=${hasPlaceholder}, container=${hasContainer}`);
+    });
     // 🔼 --- DEBUG END --- 🔼
 
-    setPreviewContent(sanitizedHtml);
+    setPreviewContent(finalHtml);
     setMermaidDiagrams(diagrams);
   };
+
+  // Mermaidダイアグラムをレンダリング（HTML内のコンテナに挿入）
+  useEffect(() => {
+    if (!previewRef.current || mermaidDiagrams.length === 0) return;
+
+    // DOMが更新された後にレンダリングするため、少し遅延
+    const timeoutId = setTimeout(() => {
+      const renderMermaidDiagrams = async () => {
+        for (const diagram of mermaidDiagrams) {
+          const container = previewRef.current?.querySelector(`#container-${diagram.id}`);
+          if (!container) {
+            console.warn(`[Mermaid] Container not found for diagram ${diagram.id}`);
+            continue;
+          }
+
+          // 既にSVGがレンダリングされている場合はスキップ（再レンダリング防止）
+          if (container.querySelector('svg')) {
+            console.log(`[Mermaid] Diagram ${diagram.id} already rendered, skipping`);
+            continue;
+          }
+
+          try {
+            const id = `mermaid-${diagram.id}-${Date.now()}`;
+            console.log(`[Mermaid] Rendering diagram ${diagram.id} with content:`, diagram.content.substring(0, 50));
+            const { svg } = await mermaid.render(id, diagram.content);
+            if (container && container.parentNode) {
+              container.innerHTML = svg;
+              console.log(`[Mermaid] Successfully rendered diagram ${diagram.id}`);
+            }
+          } catch (error) {
+            console.error('Mermaid rendering error:', error);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            if (container && container.parentNode) {
+              container.innerHTML = `
+                <div style="color: #dc2626; padding: 1rem; background: #fef2f2; border-radius: 0.5rem; margin: 0; max-width: 100%; box-sizing: border-box;">
+                  <div style="margin-bottom: 0.75rem;">
+                    <strong>Mermaidダイアグラムのレンダリングエラー:</strong>
+                  </div>
+                  <div style="padding: 0.5rem; background: rgba(0, 0, 0, 0.1); border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.875rem; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; overflow-x: auto; max-width: 100%;">
+                    <code style="word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">${errorMessage}</code>
+                  </div>
+                </div>
+              `;
+            }
+          }
+        }
+      };
+
+      renderMermaidDiagrams();
+    }, 100); // 少し長めの遅延でDOM更新を確実に待つ
+
+    return () => clearTimeout(timeoutId);
+  }, [previewContent, mermaidDiagrams]);
 
   // プレビュー内のリンククリックをインターセプトし、.mdリンクはエディタで開く
   useEffect(() => {
@@ -415,22 +738,75 @@ export function TaskEditor({
       const anchor = target.closest('a') as HTMLAnchorElement | null;
       if (!anchor) return;
 
-      const href = anchor.getAttribute('href') || '';
-      // パターン1: http://task-001.md/ のような自動リンク
-      const httpMdMatch = href.match(/^https?:\/\/([^\/]+\.md)\/?$/i);
-      // パターン2: 相対リンクっぽく .md を含む
-      const mdPathMatch = href.match(/^([^:\s?#]+\.md)$/i);
+      // Tauriアプリ内ではすべてのリンククリックをインターセプトしてデフォルト動作を防ぐ
+      e.preventDefault();
+      e.stopPropagation();
 
-      const candidate = (httpMdMatch?.[1] || mdPathMatch?.[1] || '').trim();
-      if (!candidate) return;
+      let href = anchor.getAttribute('href') || '';
+      if (!href) return;
 
-      // ファイル名からタスクIDを推定（拡張子.md を除去）
-      const taskId = candidate.replace(/\.md$/i, '');
+      // URLエンコードされた文字をデコード
+      try {
+        href = decodeURIComponent(href);
+      } catch {
+        // デコードに失敗した場合は元のhrefを使用
+      }
+
+      // .mdファイルへのリンクかどうかをチェック
+      let mdFileName: string | null = null;
+
+      // パターン1: 完全なURL (http://localhost:5173/task-xxx.md または http://localhost:5173/requirements/task-xxx.md)
+      const fullUrlMatch = href.match(/^https?:\/\/[^\/]+(.*)$/i);
+      if (fullUrlMatch) {
+        const path = fullUrlMatch[1];
+        // パスの最後の部分から.mdファイル名を抽出
+        const pathMatch = path.match(/([^\/?#]+\.md)(?:\/|$|\?|#)/i) || path.match(/([^\/?#]+\.md)$/i);
+        if (pathMatch) {
+          mdFileName = pathMatch[1];
+        }
+      }
+
+      // パターン2: 相対パス (./task-xxx.md, ../requirements/task-xxx.md など)
+      if (!mdFileName) {
+        // パスの最後の部分（ファイル名）を抽出
+        // 例: ../requirements/10-implementation-roadmap.md → 10-implementation-roadmap.md
+        const pathParts = href.split(/[\/\\]/);
+        for (let i = pathParts.length - 1; i >= 0; i--) {
+          const part = pathParts[i];
+          if (part && part.toLowerCase().endsWith('.md')) {
+            mdFileName = part;
+            break;
+          }
+        }
+
+        // パターン3: 単純なファイル名 (task-xxx.md)
+        if (!mdFileName) {
+          const simpleMatch = href.match(/^([^\/?#]+\.md)(?:\/|$|\?|#)/i) || href.match(/^([^\/?#]+\.md)$/i);
+          if (simpleMatch && !simpleMatch[1].includes('://')) {
+            mdFileName = simpleMatch[1];
+          }
+        }
+      }
+
+      if (!mdFileName) {
+        // .mdファイルへのリンクでない場合は何もしない（デフォルト動作は既に防いでいる）
+        console.log('[Link] Ignored non-markdown link:', href);
+        return;
+      }
+
+      // ファイル名からタスクIDを抽出（拡張子.md を除去）
+      const taskId = mdFileName.replace(/\.md$/i, '');
+      
+      // タスクが存在するかチェック
       const exists = Boolean(workspace?.tasks && workspace.tasks[taskId]);
-      if (!exists) return; // 存在しない場合は通常のリンク動作
+      if (!exists) {
+        // 存在しないタスクへのリンクの場合
+        console.log('[Link] Task not found:', taskId, 'from link:', href);
+        return;
+      }
 
       // タスクが存在するならアプリ内で開く
-      e.preventDefault();
+      console.log('[Link] Opening task:', taskId, 'from link:', href);
       onOpenTask?.(taskId);
     };
 
@@ -559,11 +935,13 @@ export function TaskEditor({
     console.log('  Saving to file...');
 
     // 4. タスクを保存（contentには本文のみを保持）
+    // 注意: task propから最新の基本情報（特にfilePathとid）を取得し、
+    // frontMatterとtagOrderは編集中の情報（currentTask）を使用
     const updatedTask: Task = {
-      ...currentTask,
+      ...task,           // 最新のtaskから基本情報を取得（特にfilePathとid）
       content: bodyContent,  // 本文のみを保持（ファイル保存にはfullContentを使用）
-      frontMatter,
-      tagOrder,
+      frontMatter,      // 編集中のFront Matter（currentTaskから取得済み）
+      tagOrder,         // 編集中のタグ順序（currentTaskから取得済み）
     };
 
     // ファイルに保存するためにRust側でfullContentが使用されるので、
@@ -850,11 +1228,6 @@ export function TaskEditor({
         >
           <div className="preview-content" ref={previewRef}>
             <div dangerouslySetInnerHTML={{ __html: previewContent }} />
-            {mermaidDiagrams.map((diagram) => (
-              <div key={diagram.id} id={`container-${diagram.id}`}>
-                <MermaidPreview content={diagram.content} />
-              </div>
-            ))}
           </div>
         </div>
       </div>

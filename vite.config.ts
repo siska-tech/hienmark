@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
-const appVersion = packageJson.version || '0.1.0';
+const appVersion = packageJson.version || '0.2.0';
 const buildTime = new Date().toISOString().replace('T', ' ').slice(0, 19);
 
 // https://vitejs.dev/config/

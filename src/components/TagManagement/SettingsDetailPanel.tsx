@@ -1320,7 +1320,7 @@ export function SettingsDetailPanel({
 
       case 'about':
         // Get version from package.json (import.meta.env.VITE_APP_VERSION will be set during build)
-        const appVersion = import.meta.env.VITE_APP_VERSION || '0.1.0';
+        const appVersion = import.meta.env.VITE_APP_VERSION || '0.2.0';
         const buildTime = import.meta.env.VITE_BUILD_TIME || '';
         const githubRepo = 'https://github.com/siska-tech/hienmark';
         

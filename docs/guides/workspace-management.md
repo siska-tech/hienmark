@@ -255,7 +255,6 @@ HienMarkは再帰的に `.md` ファイルをスキャンするため、ディ�
 ## 次のステップ
 
 - [タグ管理機能ガイド](tag-management.md) - タグの管理と設定
-- [テンプレート機能ガイド](tag-templates.md) - タグテンプレートの使い方
+- [タグテンプレート機能](tag-templates.md) - タグテンプレートの使い方
 - [分析ダッシュボードガイド](analysis-dashboard.md) - タスクデータの可視化
-- [テンプレートクイックスタート](template-quick-start.md) - テンプレート機能の基本
 

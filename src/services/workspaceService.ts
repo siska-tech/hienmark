@@ -99,3 +99,33 @@ export async function renameTask(
 ): Promise<void> {
   await invoke('rename_task', { workspacePath, oldTaskId, newTaskId });
 }
+
+/**
+ * ディレクトリを作成
+ *
+ * @param workspacePath - ワークスペースのルートパス
+ * @param folderPath - 作成するディレクトリのパス（相対パス）
+ */
+export async function createFolder(
+  workspacePath: string,
+  folderPath: string
+): Promise<void> {
+  await invoke('create_folder', { workspacePath, folderPath });
+}
+
+/**
+ * タスクをフォルダ間で移動
+ *
+ * @param workspacePath - ワークスペースのルートパス
+ * @param taskId - タスクID（ファイル名）
+ * @param sourcePath - 移動元の相対パス
+ * @param destPath - 移動先の相対パス
+ */
+export async function moveTask(
+  workspacePath: string,
+  taskId: string,
+  sourcePath: string,
+  destPath: string
+): Promise<void> {
+  await invoke('move_task', { workspacePath, taskId, sourcePath, destPath });
+}

@@ -131,6 +131,9 @@ mod tests {
 
     #[test]
     fn test_apply_template_to_new_task() {
+        use std::collections::HashMap;
+        use crate::models::task::TagValue;
+        
         let mut tags = HashMap::new();
         tags.insert("status".to_string(), TagValue::String("pending".to_string()));
         tags.insert("priority".to_string(), TagValue::String("high".to_string()));
@@ -152,6 +155,9 @@ mod tests {
 
     #[test]
     fn test_apply_template_to_existing_task_merge() {
+        use std::collections::HashMap;
+        use crate::models::task::TagValue;
+        
         let mut tags = HashMap::new();
         tags.insert("status".to_string(), TagValue::String("pending".to_string()));
         tags.insert("priority".to_string(), TagValue::String("high".to_string()));
@@ -177,6 +183,9 @@ mod tests {
 
     #[test]
     fn test_apply_template_to_existing_task_overwrite() {
+        use std::collections::HashMap;
+        use crate::models::task::TagValue;
+        
         let mut tags = HashMap::new();
         tags.insert("status".to_string(), TagValue::String("pending".to_string()));
 
@@ -215,6 +224,9 @@ mod tests {
 
     #[test]
     fn test_validate_template() {
+        use std::collections::HashMap;
+        use crate::models::task::TagValue;
+        
         let mut tags = HashMap::new();
         tags.insert("status".to_string(), TagValue::String("pending".to_string()));
 
